@@ -1,14 +1,15 @@
-import { Component } from '@angular/core';
-import { MeetingService } from './meeting.service';
+import {Component} from '@angular/core';
+import {MeetingService} from './meeting.service';
 import {NgClass, NgForOf, NgIf} from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
+import {FormsModule} from '@angular/forms';
+import {InputTextModule} from 'primeng/inputtext';
+import {ButtonModule} from 'primeng/button';
 import {ScrollPanel} from "primeng/scrollpanel";
 import {Card} from "primeng/card";
 import {UIChart} from "primeng/chart";
 import {Divider} from "primeng/divider";
 import {TableModule} from "primeng/table";
+import {RecipientType} from "@tech-forge-innovate/tfi-chat-sdk";
 
 interface Poll {
   id: string;
@@ -69,7 +70,9 @@ export class AppComponent {
     if (!this.email || !this.name) {
       this.showInput = true;
     } else {
-      this.connectToRoom();
+      setTimeout(() => {
+        this.connectToRoom();
+      }, 2000);
     }
   }
 
@@ -127,8 +130,8 @@ export class AppComponent {
     if (!this.inputMessage.trim()) return;
     this.meetingService.client!.sendChatMessage({
       message: this.inputMessage,
-      messageType: 'text'
-    }).then(r => {
+      messageType: 'text',
+    }, RecipientType.ROOM).then(r => {
       console.log('Message sent successfully:', r);
     });
     this.inputMessage = '';
@@ -140,7 +143,7 @@ export class AppComponent {
     this.meetingService.client!.sendVote({
       option: selectedOption,
       pollId: this.poll!.id,
-    });
+    }).then(r => {});
   }
 
   updateChartWithResult(result: any) {
