@@ -131,8 +131,7 @@ export class AppComponent {
     this.meetingService.client!.sendChatMessage({
       message: this.inputMessage,
       messageType: 'text',
-    }, RecipientType.ROOM).then(r => {
-      console.log('Message sent successfully:', r);
+    }, RecipientType.HOST).then(r => {
     });
     this.inputMessage = '';
   }
