@@ -15,7 +15,10 @@ interface Poll {
   id: string;
   roomId: string;
   question: string;
-  options: string[];
+  options: {
+    value: string,
+    id: string
+  }[];
   published: boolean;
   expiresAt: Date | null;
   createdAt: Date;
@@ -49,7 +52,6 @@ export class AppComponent {
   poll?: Poll;
   polls: Poll[] = [];
   voted = false;
-  waitingForResult = false;
   pollResult: any = null;
   votes = [
     { option: 'Angular', count: 25 },
@@ -106,11 +108,9 @@ export class AppComponent {
         this.meetingService.client!.onPollStart((poll: any) => {
           this.poll = poll;
           this.voted = false;
-          this.waitingForResult = false;
           this.pollResult = null;
         });
         this.meetingService.client!.onPollResult((result: any) => {
-          this.waitingForResult = false;
           this.pollResult = result;
           this.updateChartWithResult(result);
         });
@@ -136,27 +136,34 @@ export class AppComponent {
     this.inputMessage = '';
   }
 
-  vote(selectedOption: string) {
+  vote(selectedOption: {
+    id: string,
+    value: string
+  }) {
     this.voted = true;
-    this.waitingForResult = true;
     this.meetingService.client!.sendVote({
       option: selectedOption,
       pollId: this.poll!.id,
+    }, (updates) => {
+      // Update chart immediately with live updates
+      const labels = this.poll?.options.map(o => o.value);
+      const data = this.poll?.options.map(o => updates.counts[o.id]);
+      this.updateChartWithResult({
+        labels, data
+      });
+      // Optionally, store the latest counts as pollResult if needed elsewhere
+      this.pollResult = { labels, data };
     }).then(r => {});
   }
 
   updateChartWithResult(result: any) {
-    // result.options: [{ option: string, count: number }]
-    const labels = result.results.map((o: any) => o.option);
-    const data = result.results.map((o: any) => o.count);
-
     this.basicData = {
-      labels,
+      labels: result.labels,
       datasets: [
         {
           label: 'Votes',
           backgroundColor: '#42A5F5',
-          data
+          data: result.data
         }
       ]
     };

@@ -61,7 +61,7 @@
                         <button
                                 (click)="vote(option)"
                                 *ngFor="let option of poll.options"
-                                [label]="option"
+                                [label]="option.value"
                                 class="p-button-outlined p-button-secondary text-left justify-content-start"
                                 pButton
                                 style="width: 100%"
@@ -69,13 +69,13 @@
                     </ng-container>
 
                     <ng-container *ngIf="voted">
-                        <ng-container *ngIf="waitingForResult">
-                            <div class="text-center text-primary font-semibold py-4">
-                                Please wait for poll results...
-                            </div>
-                        </ng-container>
-                        <ng-container *ngIf="!waitingForResult && pollResult">
-                            <p-chart [data]="basicData" [options]="basicOptions" type="bar"></p-chart>
+<!--                        <ng-container *ngIf="waitingForResult">-->
+<!--                            <div class="text-center text-primary font-semibold py-4">-->
+<!--                                Please wait for poll results...-->
+<!--                            </div>-->
+<!--                        </ng-container>-->
+                        <ng-container *ngIf="pollResult">
+                            <p-chart  [data]="basicData" [options]="basicOptions" type="bar"></p-chart>
                         </ng-container>
                     </ng-container>
                 </div>
@@ -87,7 +87,7 @@
 <!--                    <div *ngIf="voted && waitingForResult" class="text-center text-primary font-semibold">-->
 <!--                        Waiting for poll results...-->
 <!--                    </div>-->
-                    <div *ngIf="voted && !waitingForResult && pollResult"
+                    <div *ngIf="voted && pollResult"
                          class="text-center text-success font-semibold">
                         Thank you for voting!
                     </div>
