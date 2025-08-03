@@ -1,5 +1,5 @@
 import {Component, ElementRef, Input, ViewChild, ViewEncapsulation} from '@angular/core';
-import  videojs from 'video.js';
+import flvjs from 'flv.js';
 
 @Component({
   selector: 'app-live',
@@ -13,45 +13,45 @@ export class LiveComponent {
   @ViewChild('target', {static: true}) target!: ElementRef;
 
   // See options: https://videojs.com/guides/options
+
   @Input() options!: {
-    fluid: boolean,
-    aspectRatio: string,
     autoplay: boolean,
-    sources: {
-      src: string,
-      type: string,
-    }[],
+    src: string,
+    type: string,
   };
 
-  player: any;
+  flvPlayer: flvjs.Player | null = null;
+
 
   constructor(
     private elementRef: ElementRef,
   ) {
     this.options = {
-      fluid: true,
-      aspectRatio: '16:9',
       autoplay: true,
-      sources: [
-        {
-          src: 'https://webinar-cdn.techforgeinnovate.com/0/stream.m3u8',
-          type: 'application/x-mpegURL',
-        },
-      ],
-    }
+      src: 'https://webinar-cdn.techforgeinnovate.com/my-secret-key.flv',
+      type: 'flv',
+    };
   }
 
-  // Instantiate a Video.js player OnInit
   ngOnInit() {
-    this.player = videojs(this.target.nativeElement, this.options, function onPlayerReady() {
-      console.log('onPlayerReady', this);
-    });
+    if (flvjs.isSupported()) {
+      this.flvPlayer = flvjs.createPlayer({
+        type: this.options.type,
+        url: this.options.src,
+      });
+      this.flvPlayer.attachMediaElement(this.target.nativeElement);
+      this.flvPlayer.load();
+      if (this.options.autoplay) {
+        this.flvPlayer.play();
+      }
+    }
   }
 
   // Dispose the player OnDestroy
   ngOnDestroy() {
-    if (this.player) {
-      this.player.dispose();
+    if (this.flvPlayer) {
+      this.flvPlayer.destroy();
+      this.flvPlayer = null;
     }
   }
 }

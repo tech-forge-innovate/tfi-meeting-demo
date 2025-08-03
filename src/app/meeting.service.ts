@@ -10,7 +10,7 @@ export class MeetingService {
   constructor() {
     this.client = new RoomClient({
       apiHost: 'http://localhost:3005', // Replace with your actual API host
-      roomId: '<------->', // Replace with your actual room ID
+      roomId: '43411bdf-c819-4372-85f3-ba35394edb5b', // Replace with your actual room ID
       websocketKey: 'd8f3321eew5f3218xwse0f12e3c4d5', // Replace with your actual WebSocket key
       apiKey: '',
     });

@@ -26,7 +26,7 @@ interface Poll {
 }
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-demo',
   imports: [
     InputTextModule,
     ButtonModule,
@@ -42,8 +42,8 @@ interface Poll {
     RouterOutlet
   ],
   standalone: true,
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  templateUrl: './demo.component.html',
+  styleUrls: ['./demo.component.scss'],
 })
 export class DemoComponent {
   email: string | null = null;
