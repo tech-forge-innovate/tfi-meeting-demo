@@ -39,7 +39,6 @@ interface Poll {
     UIChart,
     Divider,
     TableModule,
-    RouterOutlet
   ],
   standalone: true,
   templateUrl: './demo.component.html',
